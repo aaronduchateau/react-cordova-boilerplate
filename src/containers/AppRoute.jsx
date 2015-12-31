@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Login from './Login.jsx';
 import TodoApp from './TodoApp.jsx';
+import Home from './Home.jsx';
 import auth from '../core/auth';
 import * as CredentialsActions from '../actions/CredentialsActions';
 
@@ -71,7 +72,8 @@ class AppRoute extends Component {
     }
   }
   handleRedirect(nextState, replaceState) {
-    replaceState({ nextPathname: nextState.location.pathname }, this._authenticated ? '/main' : '/login');
+    //replaceState({ nextPathname: nextState.location.pathname }, this._authenticated ? '/main' : '/login');
+    replaceState({ nextPathname: nextState.location.pathname }, this._authenticated ? '/home' : '/login');
   }
 
   render() {
@@ -84,6 +86,7 @@ class AppRoute extends Component {
     return (
       <Router history={history}>
         <Route path="/main" component={TodoApp} onEnter={::this.checkAuth}/>
+        <Route path="/home" component={Home} onEnter={::this.checkAuth}/>
         <Route path="/login" component={Login}/>
         <Route path="*" onEnter={::this.handleRedirect}/>
       </Router>
