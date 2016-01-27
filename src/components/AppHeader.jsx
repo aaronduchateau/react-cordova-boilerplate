@@ -12,26 +12,35 @@ import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import LeftNav from 'material-ui/lib/left-nav';
+import Snackbar from 'material-ui/lib/snackbar';
 
 export class AppHeader extends Component {
   static propTypes = {
     todos: PropTypes.array.isRequired,
     credentialsActions: PropTypes.object.isRequired,
-    todoActions: PropTypes.object.isRequired
+    todoActions: PropTypes.object.isRequired,
+
   };
 
   constructor(props, context) {
     super(props, context);
-    this.state = {musicianStatus:"on deck", open: false};
+    this.state = {musicianStatus:"on deck", open: false, openSnack: false};
   }
   
   handleLogout() {
     auth.logout();
     this.props.credentialsActions.clearCredentials();
   };
+
+  flyNavigate(loc){
+    this.setState({open: false});
+    this.props.flyNavigate(loc);
+  };
   
   handleChange(e, value){
-    this.setState({musicianStatus: value.props.primaryText});
+    if(e){
+    this.setState({musicianStatus: value.props.primaryText, openSnack: true});
+    }
   };
   
   handleToggle = () => this.setState({open: !this.state.open});
@@ -39,6 +48,7 @@ export class AppHeader extends Component {
   render() {
     const { todos, todoActions } = this.props;
     var musicianStatus = this.state.musicianStatus;
+    var leftNavOpen = this.state.open;
     return (
       <div>
          <AppBar
@@ -60,10 +70,19 @@ export class AppHeader extends Component {
             </IconMenu>
           }
         />
-        <LeftNav open={this.state.open}>
-          <MenuItem>Menu Item</MenuItem>
+        <LeftNav open={leftNavOpen}>
+          <MenuItem onClick={::this.flyNavigate.bind(this, 'news')}>News Feed</MenuItem>
+          <MenuItem onClick={::this.flyNavigate.bind(this, 'profile')}>Profile</MenuItem>
+          <MenuItem onClick={::this.flyNavigate.bind(this, 'calendar')}>Calendar</MenuItem>
+          <MenuItem onClick={::this.flyNavigate.bind(this, 'messages')}>Messages</MenuItem>
+          <MenuItem onClick={::this.flyNavigate.bind(this, 'tip')}>Tip Jar</MenuItem>
           <MenuItem onClick={::this.handleLogout}>logout</MenuItem>
         </LeftNav>
+        <Snackbar
+          open={this.state.openSnack}
+          message={"Your status has been set to " + this.state.musicianStatus + ". Awesome!"}
+          autoHideDuration={3600}
+        />
       </div>
     );
   }

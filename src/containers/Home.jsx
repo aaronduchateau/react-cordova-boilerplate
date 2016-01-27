@@ -7,6 +7,8 @@ import auth from '../core/auth';
 import AppHeader from '../components/AppHeader.jsx';
 import AppHeaderTwo from '../components/AppHeaderTwo.jsx';
 import Calendar from '../components/Calendar.jsx';
+import Messages from '../components/Messages.jsx';
+import Profile from '../components/Profile.jsx';
 import MainSection from '../components/MainSection.jsx';
 
 import AppBar from 'material-ui/lib/app-bar';
@@ -16,6 +18,7 @@ import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import LeftNav from 'material-ui/lib/left-nav';
+
 
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
@@ -47,43 +50,54 @@ export class Home extends Component {
   };
   constructor(props, context) {
     super(props, context);
-    this.state = {musicianStatus:"on deck", open: false};
-  }
+    this.state = {
+      musicianStatus: "on deck", 
+      open: false,
+      selectedTab: "profile"};
+  };
+
+  handleOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
+  flyNavigate = (loc) => {
+    if (loc === 'profile' || loc === 'calendar' || loc === 'messages'){
+      this.setState({selectedTab: loc});
+    }
+  };
+
+  handleSearchToggle = () => this.setState({openSearchDialogue: !this.state.openSearchDialogue});
   
   render() {
     const { todos, todoActions } = this.props;
-    //var musicianStatus = this.state.musicianStatus;
+    var musicianStatus = this.state.musicianStatus;
+
     return (
       <div style={{backgroundColor: 'white'}}>
-        <AppHeader />
+        <AppHeader flyNavigate={this.flyNavigate}/>
         <AppHeaderTwo />
-        <Tabs>
-          <Tab label="Profile" >
+        <Tabs value={this.state.selectedTab}>
+          <Tab label="Profile" value="profile" onClick={this.flyNavigate.bind(this, 'profile')}>
             <div style={tabStyles.backgroundDiv}>
-              <h2 style={tabStyles.headline}>Tab One Template Example</h2>
-              <p>
-                This is an example of a tab template!
-              </p>
-              <p>
-                You can put any sort of HTML or react component in here. It even keeps the component state!
-              </p>
-             
+              <Profile/>
             </div>
           </Tab>
-          <Tab label="Calendar" >
+          <Tab label="Calendar" value="calendar" onClick={this.flyNavigate.bind(this, 'calendar')}>
             <div style={tabStyles.backgroundDiv}>
               <Calendar />
             </div>
           </Tab>
-          <Tab label="Messages" >
+          <Tab label="Messages" value="messages" onClick={this.flyNavigate.bind(this, 'messages')}>
             <div style={tabStyles.backgroundDiv}>
-              <h2 style={tabStyles.headline}>Tab Two Template Example</h2>
-              <p>
-                This is another example of a tab template!
-              </p>
+              <Messages />
             </div>
           </Tab>
         </Tabs>
+      
       </div>
     );
   }
